@@ -1,4 +1,6 @@
+import 'package:orbital_app/create_account.dart';
 import 'package:orbital_app/log_in_screen.dart';
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -18,6 +20,11 @@ void main() {
           child: const LogInScreen()
         ),
       ),
+      //Define app routes
+      //initialRoute: '/',
+      routes: {
+        '/CreateAccountPage' : (context) => const CreateAccountPage(),
+      },
     ),
   );
 }

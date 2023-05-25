@@ -8,6 +8,51 @@ class CreateAccountPage extends StatefulWidget {
 }
 
 class CreateAccountPageState extends State<CreateAccountPage> {
+  final _emailController = TextEditingController();
+  final _passwordContoller = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+
+
+  //dispose TextEditingController to save memory
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordContoller.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+
+  }
+
+  //using the data that the user entered after checking if the email, password, confirmed password entered by the user is correct
+  void _signUp() {
+    final enteredEmail = _emailController.text.trim();
+    final enteredPassword = _passwordContoller.text.trim();
+    final enteredConfirmedPassword = _confirmPasswordController.text.trim();
+
+    if(enteredEmail == '' || enteredPassword == '' || enteredConfirmedPassword == '') {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Invalid input'),
+          content: const Text(
+            'Please ensure that all fields are not empty before submitting.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(ctx); 
+              },
+              child: const Text('Okay'),
+            ),
+          ],
+        ),
+      
+      );
+      return;
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +83,9 @@ class CreateAccountPageState extends State<CreateAccountPage> {
           const SizedBox(height: 10),
           SizedBox(
           width: 325, 
-          child: TextField(decoration: InputDecoration(
+          child: TextField(
+            controller: _emailController,
+            decoration: InputDecoration(
               filled: true,
               
               fillColor: Color(int.parse("#e8ccfc".substring(1, 7), radix: 16) + 0xFF000000),
@@ -66,7 +113,9 @@ class CreateAccountPageState extends State<CreateAccountPage> {
           const SizedBox(height: 10),
           SizedBox(
           width: 325, 
-          child: TextField(decoration: InputDecoration(
+          child: TextField(
+            controller: _passwordContoller,
+            decoration: InputDecoration(
               filled: true,
               fillColor: Color(int.parse("#e8ccfc".substring(1, 7), radix: 16) + 0xFF000000),
               enabledBorder: OutlineInputBorder(
@@ -90,9 +139,12 @@ class CreateAccountPageState extends State<CreateAccountPage> {
             ),
           ),
           const SizedBox(height: 10),
+          //Confirm password
           SizedBox(
           width: 325, 
-          child: TextField(decoration: InputDecoration(
+          child: TextField(
+            controller: _confirmPasswordController,
+            decoration: InputDecoration(
               filled: true,
               fillColor: Color(int.parse("#e8ccfc".substring(1, 7), radix: 16) + 0xFF000000),
               enabledBorder: OutlineInputBorder(
@@ -108,10 +160,13 @@ class CreateAccountPageState extends State<CreateAccountPage> {
           ),
           ),
           const SizedBox(height: 30), //another padding between text and button
+          //Sign up button 
           SizedBox(width: 325, 
             
             child: OutlinedButton(
-              onPressed: () {}, //annoymous function that does not have functionality yet
+              onPressed: () {
+                _signUp();
+              }, //annoymous function that does not have functionality yet
               style: OutlinedButton.styleFrom(
                 foregroundColor: Colors.white, //just style the button
                 backgroundColor: Color(int.parse("#389ce4".substring(1, 7), radix: 16) + 0xFF000000), 
@@ -126,7 +181,7 @@ class CreateAccountPageState extends State<CreateAccountPage> {
             ),
           ),
           const SizedBox(height:20),
-          // Forget password and sign up
+          // Already have an account? Sign up here!
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [

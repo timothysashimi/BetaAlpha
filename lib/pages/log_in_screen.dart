@@ -6,7 +6,7 @@ import 'package:orbital_app/components/my_textfield.dart';
 class LogInScreen extends StatefulWidget {
   //StatelessWidget is an abstract class
 
-  LogInScreen({super.key});
+  const LogInScreen({super.key});
 
   @override
   State<LogInScreen> createState() => _LogInScreenState();
@@ -165,7 +165,9 @@ class _LogInScreenState extends State<LogInScreen> {
                       width: 130,
                       child: TextButton(
                         onPressed:
-                            () {}, //annoymous function that does not have functionality yet
+                            () {
+                              Navigator.pushNamed(context, '/ForgotPasswordPage');
+                            }, 
                         style: TextButton.styleFrom(
                           foregroundColor:
                               Colors.grey[600], //just style the button

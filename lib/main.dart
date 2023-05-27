@@ -2,10 +2,8 @@ import 'package:orbital_app/pages/auth_page.dart';
 import 'package:orbital_app/pages/create_account.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'package:orbital_app/pages/log_in_screen.dart';
+import 'package:orbital_app/pages/login_page.dart';
 import 'package:orbital_app/pages/forgot_password.dart';
-
-
 
 import 'package:flutter/material.dart';
 

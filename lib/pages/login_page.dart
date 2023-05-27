@@ -3,16 +3,16 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:orbital_app/components/my_textfield.dart';
 
-class LogInScreen extends StatefulWidget {
+class LoginPage extends StatefulWidget {
   //StatelessWidget is an abstract class
-
-  const LogInScreen({super.key});
+  final Function()? onTap;
+  const LoginPage({super.key, required this.onTap});
 
   @override
-  State<LogInScreen> createState() => _LogInScreenState();
+  State<LoginPage> createState() => _LoginPage();
 }
 
-class _LogInScreenState extends State<LogInScreen> {
+class _LoginPage extends State<LoginPage> {
   final emailController = TextEditingController();
 
   final passwordController = TextEditingController();
@@ -29,6 +29,23 @@ class _LogInScreenState extends State<LogInScreen> {
       },
     );
 
+    // method to display error message
+    void showErrorMessage(String message) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Center(
+              child: Text(
+                message,
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+          );
+        },
+      );
+    }
+
     //attempt to sign in
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -39,41 +56,9 @@ class _LogInScreenState extends State<LogInScreen> {
     } on FirebaseAuthException catch (e) {
       //pop the loading circle
       Navigator.pop(context);
-      //wrong email
-      if (e.code == 'user-not-found') {
-        //show error
-        wrongEmailMessage();
-      }
-      //wrong password
-      else if (e.code == 'wrong-password') {
-        //show error to user
-        wrongPasswordMessage();
-      }
+      //show error message
+      showErrorMessage(e.code);
     }
-  }
-
-  // method to display wrong email
-  void wrongEmailMessage() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return const AlertDialog(
-          title: Text('Incorrect Email'),
-        );
-      },
-    );
-  }
-
-  // method to display wrong password
-  void wrongPasswordMessage() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return const AlertDialog(
-          title: Text('Incorrect Password'),
-        );
-      },
-    );
   }
 
   @override
@@ -93,7 +78,7 @@ class _LogInScreenState extends State<LogInScreen> {
                         50), //to indluce some space between image and text box(padding)
                 const Align(
                   alignment: Alignment(-0.65, 0),
-                  child: Text('Sign In',
+                  child: Text('Welcome Back!',
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 30,
@@ -141,8 +126,7 @@ class _LogInScreenState extends State<LogInScreen> {
                 SizedBox(
                   width: 325,
                   child: OutlinedButton(
-                    onPressed:
-                        signUserIn, //annoymous function that does not have functionality yet
+                    onPressed: signUserIn,
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.white, //just style the button
                       backgroundColor: Color(
@@ -164,10 +148,9 @@ class _LogInScreenState extends State<LogInScreen> {
                     SizedBox(
                       width: 130,
                       child: TextButton(
-                        onPressed:
-                            () {
-                              Navigator.pushNamed(context, '/ForgotPasswordPage');
-                            }, 
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/ForgotPasswordPage');
+                        },
                         style: TextButton.styleFrom(
                           foregroundColor:
                               Colors.grey[600], //just style the button
@@ -187,7 +170,8 @@ class _LogInScreenState extends State<LogInScreen> {
                               int.parse("#389ce4".substring(1, 7), radix: 16) +
                                   0xFF000000), //just style the button
                         ),
-                        child: const Text('Sign up'),
+                        child: GestureDetector(
+                            onTap: widget.onTap, child: const Text('Sign up')),
                       ),
                     ),
                   ],

@@ -12,7 +12,11 @@ Furthermore, sending a problem does not fully indicate an improvement in the use
 
 
 Milestone 1:
-* Demo Video Link: https://drive.google.com/file/d/1OhOEJEA6jpfJoYKnOCP8f1oSUBx-d_t7/view?usp=share_link
-* Project Overview: https://docs.google.com/document/d/1l2NA3gH6zvp3GrubdpNg7eBFMKmGKTT6jOKo4BIkN_I/edit?usp=sharing
-* Project Poster: https://drive.google.com/file/d/1tjJIpWFJpbP0i7rMiDlqfBIhaPafhJlz/view?usp=share_link
-* Introduction Video: https://drive.google.com/file/d/1GoL1ZZRiCS9qMv5grWObDF-3UXxF_Bsq/view?usp=share_link
+<br></br>
+🔗Demo Video Link: https://drive.google.com/file/d/1OhOEJEA6jpfJoYKnOCP8f1oSUBx-d_t7/view?usp=share_link
+<br></br>
+🔗Project Overview: https://docs.google.com/document/d/1l2NA3gH6zvp3GrubdpNg7eBFMKmGKTT6jOKo4BIkN_I/edit?usp=sharing
+<br></br>
+🔗Project Poster: https://drive.google.com/file/d/1tjJIpWFJpbP0i7rMiDlqfBIhaPafhJlz/view?usp=share_link
+<br></br>
+🔗Introduction Video: https://drive.google.com/file/d/1GoL1ZZRiCS9qMv5grWObDF-3UXxF_Bsq/view?usp=share_link

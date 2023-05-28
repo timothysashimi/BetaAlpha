@@ -77,7 +77,7 @@ class _LoginPage extends State<LoginPage> {
                     height:
                         50), //to indluce some space between image and text box(padding)
                 const Align(
-                  alignment: Alignment(-0.65, 0),
+                  alignment: Alignment(-0.5, 0),
                   child: Text('Welcome Back!',
                       style: TextStyle(
                           color: Colors.black,

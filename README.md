@@ -8,9 +8,11 @@ Our application involves the user uploading a video of him/herself attempting th
 
 Furthermore, sending a problem does not fully indicate an improvement in the user’s bouldering ability as boulder problems can be tweaked slightly which will demand a completely different beta to send the problem. Thus our app also aims to fundamentally improve the user’s bouldering ability by keeping track of the user’s mistakes and generating a training programme for the user. The user can then identify his weaknesses, be it pulling strength, finger strength, technique or flexibility.
 
+&nbsp;
+
 
 Milestone 1:
-Demo Video Link: https://drive.google.com/file/d/1OhOEJEA6jpfJoYKnOCP8f1oSUBx-d_t7/view?usp=share_link
-Project Overview: https://docs.google.com/document/d/1l2NA3gH6zvp3GrubdpNg7eBFMKmGKTT6jOKo4BIkN_I/edit?usp=sharing
-Project Poster: https://drive.google.com/file/d/1tjJIpWFJpbP0i7rMiDlqfBIhaPafhJlz/view?usp=share_link
-Introduction Video: https://drive.google.com/file/d/1GoL1ZZRiCS9qMv5grWObDF-3UXxF_Bsq/view?usp=share_link
+* Demo Video Link: https://drive.google.com/file/d/1OhOEJEA6jpfJoYKnOCP8f1oSUBx-d_t7/view?usp=share_link
+* Project Overview: https://docs.google.com/document/d/1l2NA3gH6zvp3GrubdpNg7eBFMKmGKTT6jOKo4BIkN_I/edit?usp=sharing
+* Project Poster: https://drive.google.com/file/d/1tjJIpWFJpbP0i7rMiDlqfBIhaPafhJlz/view?usp=share_link
+* Introduction Video: https://drive.google.com/file/d/1GoL1ZZRiCS9qMv5grWObDF-3UXxF_Bsq/view?usp=share_link

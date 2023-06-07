@@ -84,17 +84,7 @@ class _LoginPage extends State<LoginPage> {
                           fontSize: 30,
                           fontWeight: FontWeight.bold)),
                 ),
-                const SizedBox(height: 20),
-
-                /*const Align(
-                alignment: Alignment(-0.67, 0),
-                child: Text('Email:',
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold)),
-              ),*/
-                const SizedBox(height: 10),
+                const SizedBox(height: 30),
 
                 // Email Field
                 MyTextField(
@@ -103,16 +93,7 @@ class _LoginPage extends State<LoginPage> {
                   obscureText: false,
                 ),
 
-                const SizedBox(height: 20),
-                /*const Align(
-                alignment: Alignment(-0.67, 0),
-                child: Text('Password:',
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold)),
-              ), */
-                const SizedBox(height: 10),
+                const SizedBox(height: 30),
 
                 // Password Field
                 MyTextField(

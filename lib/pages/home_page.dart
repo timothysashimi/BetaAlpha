@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:orbital_app/pages/upload_video/upload_video_page.dart';
+import 'package:orbital_app/pages/profile/profile_page.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
@@ -21,6 +23,40 @@ class HomePage extends StatelessWidget {
           child: Text(
         "LOGGED IN AS: ${user.email!}",
       )),
+      bottomNavigationBar: BottomAppBar(
+        child: Container(
+          height: 56.0,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              IconButton(
+                icon: Icon(Icons.home),
+                onPressed: () {
+                  // Navigate to home page
+                  Navigator.push(
+                      context, MaterialPageRoute(builder: (_) => HomePage()));
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.cloud_upload),
+                onPressed: () {
+                  // Navigate to upload video page
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => UploadVideoPage()));
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.person),
+                onPressed: () {
+                  // Navigate to profile page
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => ProfilePage()));
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

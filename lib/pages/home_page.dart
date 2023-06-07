@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:orbital_app/pages/upload_video/upload_video_page.dart';
 import 'package:orbital_app/pages/profile/profile_page.dart';
+import 'package:orbital_app/pages/calendar.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
@@ -20,9 +21,22 @@ class HomePage extends StatelessWidget {
         IconButton(onPressed: signUserOut, icon: const Icon(Icons.logout))
       ]),
       body: Center(
-          child: Text(
-        "LOGGED IN AS: ${user.email!}",
-      )),
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [ 
+                IconButton(
+                  icon: const Icon(Icons.calendar_month_outlined),
+                  onPressed: () {
+                    // Navigate to home page
+                    Navigator.push(
+                        context, MaterialPageRoute(builder: (_) => CalendarScreen()));
+                  },
+                ),
+                Text("LOGGED IN AS: ${user.email!}",)
+              ]
+          ), 
+        ),
+      
       bottomNavigationBar: BottomAppBar(
         child: Container(
           height: 56.0,

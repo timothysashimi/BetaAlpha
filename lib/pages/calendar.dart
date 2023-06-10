@@ -96,6 +96,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
         return ListTile(
           title: Text(event),
+          trailing: IconButton(
+          icon: const Icon(Icons.delete),
+          onPressed: () => _deleteEvent(event),
+          )
         );
       },
     );
@@ -121,9 +125,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
     final eventDetails = await showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Add Event'),
+        title: const Text('Add Event'),
         content: TextField(
-          decoration: InputDecoration(labelText: 'Event Details'),
+          decoration: const InputDecoration(labelText: 'Event Details'),
           onChanged: (value) {
             setState(() {
               _eventDetails = value;
@@ -141,19 +145,19 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 showDialog(
                   context: context,
                   builder: (context) => AlertDialog(
-                    title: Text('Error'),
-                    content: Text('Please enter event details.'),
+                    title: const Text('Error'),
+                    content: const Text('Please enter event details.'),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.of(context).pop(),
-                        child: Text('OK'),
+                        child: const Text('OK'),
                       ),
                     ],
                   ),
                 );
               }
             },
-            child: Text('Add'),
+            child: const Text('Add'),
           ),
         ],
       ),
@@ -176,4 +180,21 @@ class _CalendarScreenState extends State<CalendarScreen> {
       });
     }
   }
+
+  void _deleteEvent(String event) async {
+  // Find the reference to the event document in Firebase Firestore
+  final eventSnapshot = await FirebaseFirestore.instance
+      .collection('events')
+      .where('date', isEqualTo: _selectedDay)
+      .where('details', isEqualTo: event)
+      .get();
+
+  // Delete the event document
+  await eventSnapshot.docs.first.reference.delete();
+
+  // Update the events map to reflect the deleted event
+  setState(() {
+    _events[_selectedDay]!.remove(event);
+  });
+}
 }

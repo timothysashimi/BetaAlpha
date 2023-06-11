@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 //import 'dart:developer' as devtools show log;
 /*
 firstDay: DateTime.utc(2010, 1, 1),
@@ -106,7 +108,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   void _fetchEvents(DateTime day) async {
+    final user = FirebaseAuth.instance.currentUser;
+    final userId = user!.uid;
+
     final eventsSnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
         .collection('events')
         .where('date', isEqualTo: day)
         .get();
@@ -116,7 +123,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     setState(() {
       _events[day] = events;
     });
-  }
+}
 
   String _eventDetails = '';
 
@@ -166,7 +173,16 @@ class _CalendarScreenState extends State<CalendarScreen> {
     // Check if the user entered event details
     if (eventDetails != null) {
       // Create a new document in the 'events' collection of Firestore
-      final eventRef = FirebaseFirestore.instance.collection('events').doc();
+      //final eventRef = FirebaseFirestore.instance.collection('events').doc();
+      final user = FirebaseAuth.instance.currentUser;
+      final userId = user!.uid;
+
+      // Create a new document in the 'events' collection of Firestore
+      final eventRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('events')
+          .doc();
 
       // Set the event details in the document
       await eventRef.set({
@@ -182,8 +198,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   void _deleteEvent(String event) async {
+  //Find reference to the user in Firebase Firestore
+  final user = FirebaseAuth.instance.currentUser;
+  final userId = user!.uid;
+
   // Find the reference to the event document in Firebase Firestore
   final eventSnapshot = await FirebaseFirestore.instance
+      .collection('users')
+      .doc(userId)
       .collection('events')
       .where('date', isEqualTo: _selectedDay)
       .where('details', isEqualTo: event)

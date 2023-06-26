@@ -20,3 +20,15 @@ Milestone 1:
 🔗Project Poster: https://drive.google.com/file/d/1tjJIpWFJpbP0i7rMiDlqfBIhaPafhJlz/view?usp=share_link
 <br></br>
 🔗Introduction Video: https://drive.google.com/file/d/1GoL1ZZRiCS9qMv5grWObDF-3UXxF_Bsq/view?usp=share_link
+
+
+Milestone 2:
+
+<br></br>
+🔗Demo Video Link: https://drive.google.com/file/d/1OhOEJEA6jpfJoYKnOCP8f1oSUBx-d_t7/view?usp=share_link
+<br></br>
+🔗Project Overview: https://docs.google.com/document/d/16fRhwsdecY3ei9I0rI02mUrkdi2F4Pd9M7ldcFvmol4/edit?usp=sharing
+<br></br>
+🔗Project Poster: https://drive.google.com/file/d/1fI08jpFNCuAfNu8xq8VITL9mpuMvQUEY/view?usp=drive_link
+<br></br>
+🔗Project Log: https://docs.google.com/spreadsheets/d/1dVTUcnEKcQeP58B_Htrl_aLortmmDMkusnmeMcwlLwo/edit?usp=drive_link

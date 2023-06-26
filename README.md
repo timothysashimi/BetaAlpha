@@ -23,9 +23,10 @@ Milestone 1:
 
 
 Milestone 2:
-
 <br></br>
-🔗Demo Video Link: https://drive.google.com/file/d/1OhOEJEA6jpfJoYKnOCP8f1oSUBx-d_t7/view?usp=share_link
+🔗Demo Video 1 Link: https://drive.google.com/file/d/1OhOEJEA6jpfJoYKnOCP8f1oSUBx-d_t7/view?usp=share_link
+<br></br>
+🔗Demo Video 2 Link: https://drive.google.com/file/d/1ytzuMorztlGPfQTivE9shnfspq2zQ-Ci/view?usp=drive_link
 <br></br>
 🔗Project Overview: https://docs.google.com/document/d/16fRhwsdecY3ei9I0rI02mUrkdi2F4Pd9M7ldcFvmol4/edit?usp=sharing
 <br></br>

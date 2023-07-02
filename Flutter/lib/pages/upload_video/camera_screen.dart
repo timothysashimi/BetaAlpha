@@ -1,5 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:orbital_app/pages/google_mlkit/pose_dectector.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'dart:developer' as devtools show log;
@@ -124,6 +125,8 @@ class  CameraScreenState extends State <CameraScreen> {
                       cameraController.takePicture().then((XFile? file) {
                         if(mounted) {
                           if(file != null) {
+                            Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => PoseDetectorView(file: file)));
                             print("Picture saved to ${file.path}");
                           }
                         }

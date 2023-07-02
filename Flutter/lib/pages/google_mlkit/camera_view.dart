@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mlkit_commons/google_mlkit_commons.dart';
 
+import 'package:path_provider/path_provider.dart';
+import 'dart:developer' as devtools show log;
+
 class CameraView extends StatefulWidget {
   CameraView(
       {Key? key,
@@ -38,6 +41,7 @@ class _CameraViewState extends State<CameraView> {
   double _maxAvailableExposureOffset = 0.0;
   double _currentExposureOffset = 0.0;
   bool _changingCameraLens = false;
+  late String videoPath;
 
   @override
   void initState() {
@@ -67,6 +71,57 @@ class _CameraViewState extends State<CameraView> {
     super.dispose();
   }
 
+  Future<void> startRecordingVideo() async {
+    if (_controller != null) {
+      if (!_controller!.value.isInitialized) {
+        return;
+      }
+
+      // Create a directory to store the video
+      final Directory appDirectory = await getApplicationDocumentsDirectory();
+      final String videoDirectory = '${appDirectory.path}/Videos';
+      await Directory(videoDirectory).create(recursive: true);
+
+      // Generate a unique filename for the video
+      final String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+      videoPath = '$videoDirectory/$timestamp.mp4';
+
+      // Start recording
+      await _controller!.startVideoRecording();
+    }
+    return;
+  }
+
+  Future<void> stopRecordingVideo() async { 
+
+    if (!_controller!.value.isRecordingVideo) {
+      return;
+    }
+
+    // Stop recording
+    await _controller!.stopVideoRecording();
+
+    devtools.log("1");
+
+    // Save the video path
+    setState(() {
+      this.videoPath = videoPath;
+    });
+
+    devtools.log("2");
+
+    // Save the video file
+    final File videoFile = File(videoPath);
+
+    devtools.log(videoPath);
+
+    
+
+    return;
+
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(body: _liveFeedBody());
@@ -83,7 +138,7 @@ class _CameraViewState extends State<CameraView> {
         children: <Widget>[
           Center(
             child: _changingCameraLens
-                ? Center(
+                ? const Center(
                     child: const Text('Changing camera lens'),
                   )
                 : CameraPreview(
@@ -96,6 +151,8 @@ class _CameraViewState extends State<CameraView> {
           _detectionViewModeToggle(),
           _zoomControl(),
           _exposureControl(),
+          _startRecording(),
+          _stopRecording(),
         ],
       ),
     );
@@ -394,4 +451,93 @@ class _CameraViewState extends State<CameraView> {
       ),
     );
   }
+
+Widget _startRecording() => Positioned(
+        top: 100,
+        left: 8,
+        child: SizedBox(
+          height: 50.0,
+          width: 50.0,
+          child: FloatingActionButton(
+            heroTag: Object(),
+            onPressed: () {
+              startRecordingVideo();
+              },
+            backgroundColor: Colors.black54,
+            child: const Icon(
+              Icons.record_voice_over,
+              size: 20,
+            ),
+          ),
+        ),
+      );
+
+Widget _stopRecording() => Positioned(
+        top: 180,
+        left: 8,
+        child: SizedBox(
+          height: 50.0,
+          width: 50.0,
+          child: FloatingActionButton(
+            heroTag: Object(),
+            onPressed: () {
+              stopRecordingVideo();
+            },
+            backgroundColor: Colors.black54,
+            child: const Icon(
+              Icons.stop,
+              size: 20,
+            ),
+          ),
+        ),
+      );
 }
+
+/*
+Future<void> startRecordingVideo() async {
+    if (_controller.value.isInitialized) {
+      return;
+    }
+
+    // Create a directory to store the video
+    final Directory appDirectory = await getApplicationDocumentsDirectory();
+    final String videoDirectory = '${appDirectory.path}/Videos';
+    await Directory(videoDirectory).create(recursive: true);
+
+    // Generate a unique filename for the video
+    final String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+    videoPath = '$videoDirectory/$timestamp.mp4';
+
+    // Start recording
+    await cameraController.startVideoRecording();
+  }
+
+Future<void> stopRecordingVideo() async { 
+
+  if (!cameraController.value.isRecordingVideo) {
+    return;
+  }
+
+  // Stop recording
+  await cameraController.stopVideoRecording();
+
+  devtools.log("1");
+
+  // Save the video path
+  setState(() {
+    this.videoPath = videoPath;
+  });
+
+  devtools.log("2");
+
+  // Save the video file
+  final File videoFile = File(videoPath);
+
+  devtools.log(videoPath);
+
+  
+
+  return;
+
+}
+*/

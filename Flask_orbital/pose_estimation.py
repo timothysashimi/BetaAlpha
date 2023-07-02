@@ -19,7 +19,7 @@ import cv2 as cv
 import matplotlib.pyplot as plt
 import os
 
-net = cv.dnn.readNetFromTensorflow("graph_opt.pb") #weights
+net = cv.dnn.readNetFromTensorflow("Flask_orbital\graph_opt.pb") #weights
 
 inWidth = 368
 inHeight = 368
@@ -37,13 +37,6 @@ POSE_PAIRS = [ ["Neck", "RShoulder"], ["Neck", "LShoulder"], ["RShoulder", "RElb
                 ["REye", "REar"], ["Nose", "LEye"], ["LEye", "LEar"] ]
 
 def pose_estimation(video_path):
-    video_dir = os.path.dirname(video_path)
-    video_name = os.path.basename(video_path)
-     # Set the output path using the same directory and file name, but with a different directory or file extension
-    output_dir = video_dir  # Set the same directory as the input video
-    output_name = os.path.splitext(video_name)[0] + '_annotated.mp4'  # Set a new file extension or add a suffix to the file name
-    output_path = os.path.join(output_dir, output_name)
-
     cap = cv.VideoCapture(video_path)
     #cap.set(3, 800)
     #cap.set(4, 800)
@@ -52,10 +45,6 @@ def pose_estimation(video_path):
         cap = cv.VideoCapture(0)
     if not cap.isOpened():
         raise IOError("Cannot open video")
-
-    fourcc = cv.VideoWriter_fourcc(*'mp4v')
-    output_video = cv.VideoWriter(output_path, fourcc, cap.get(cv.CAP_PROP_FPS),
-                                  (int(cap.get(cv.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv.CAP_PROP_FRAME_HEIGHT))))
 
     while cv.waitKey(1) < 0:
         hasFrame, frame = cap.read()
@@ -102,14 +91,12 @@ def pose_estimation(video_path):
                 cv.ellipse(frame, points[idFrom], (3, 3), 0, 0, 360, (0, 0, 255), cv.FILLED)
                 cv.ellipse(frame, points[idTo], (3, 3), 0, 0, 360, (0, 0, 255), cv.FILLED)
 
-        t, _ = net.getPerfProfile() 
+        t, _ = net.getPerfProfile()
         freq = cv.getTickFrequency() / 1000
         cv.putText(frame, '%.2fms' % (t / freq), (10, 20), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0))
-        output_video.write(frame)
+
         cv.imshow('Video analysed', frame)
-    
-    cap.release()
-    output_video.release()
-    cv.destroyAllWindows()
-    return output_path
+    return frame
+
+pose_estimation(r"C:\Users\Timothy Chan\Documents\Orbital\IMG_1384.MOV")
 

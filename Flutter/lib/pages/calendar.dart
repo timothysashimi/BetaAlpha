@@ -271,7 +271,7 @@ void _fetchEventsRange(DateTime startDate, DateTime endDate) async {
                             id: _eventID,
                             title: "BetaAlpha",
                             body: _eventDetails,
-                            scheduledNotificationDateTime: DateTime.now().add(const Duration(seconds: 10)));
+                            scheduledNotificationDateTime: _selectedDay);
                 Navigator.of(context).pop(_eventDetails);
               } else {
                 // Show an error message if the event details are empty

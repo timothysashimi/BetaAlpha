@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:orbital_app/pages/notif_service.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:developer' as devtools show log;
+import 'package:intl/intl.dart';
 
 //import 'dart:developer' as devtools show log;
 /*
@@ -20,7 +23,19 @@ class _CalendarScreenState extends State<CalendarScreen> {
   DateTime _focusedDay = DateTime.now();
   DateTime _selectedDay = DateTime.now();
   Map<DateTime, List<dynamic>> _events = {};
-
+  /*
+  @override
+  void initState() {
+    
+    for (var date = DateTime.now().subtract(const Duration(days: 15)); date.isBefore(DateTime.now().add(const Duration(days: 15))); date = date.add(const Duration(days: 1))) {
+                _fetchEvents(date);
+    }
+    //_buildEventList();
+    super.initState();
+    
+    //_fetchEventsRange(_selectedDay, _selectedDay.add(const Duration(days: 14)));
+  }
+  */
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,17 +55,26 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
               // Using `isSameDay` is recommended to disregard
               // the time-part of compared DateTime objects.
+              //_fetchEventsRange(_selectedDay, _selectedDay.add(const Duration(days: 14)));
               return isSameDay(_selectedDay, day);
             },
             onDaySelected: (selectedDay, focusedDay) {
               if (!isSameDay(_selectedDay, selectedDay)) {
+                
                 // Call `setState()` when updating the selected day
                 setState(() {
                   _selectedDay = selectedDay;
                   _focusedDay = focusedDay;
                 });
               }
-              _fetchEvents(_selectedDay);
+              //_fetchEventsRange(_selectedDay, _selectedDay.add(const Duration(days: 14)));
+              for (var date = _selectedDay.subtract(const Duration(days: 30)); date.isBefore(_selectedDay.add(const Duration(days: 30))); 
+                date = date.add(const Duration(days: 1))) {
+
+                _fetchEvents(date);
+              }
+              //_fetchEventsRange(_focusedDay, _focusedDay.add(const Duration(days: 14)));
+              devtools.log("fetch event called");
             },
             onFormatChanged: (format) {
               if (_calendarFormat != format) {
@@ -68,29 +92,62 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   return _events[date] ?? [];
             },
           ),
+
           const SizedBox(height: 16),
+          /*
+          SizedBox(
+            width: 130,
+            child: TextButton(
+              onPressed: () {
+                _fetchAllEvents(DateTime.now());
+              },
+              style: TextButton.styleFrom(
+                foregroundColor:
+                    Colors.grey[600], //just style the button
+              ),
+              child: const Text('Get all events'),
+            ),
+          ), */
+          const SizedBox(
+              child: Text('Click on a date to get all events!',
+                style: TextStyle(
+                    color: Colors.blue,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold
+                )
+              ),
+            ),
+          
+          const SizedBox(height: 16),
+
           ElevatedButton(
               onPressed: _addEvent,
               child: const Text('Add Event'),
             ),
+          
+
+              
+           
           const SizedBox(height: 16),
           Expanded(
            child: _buildEventList(),
           ),
         ],
       )
+    
 
     );
   }
+  
   Widget _buildEventList() {
     final eventsForSelectedDay = _events[_selectedDay];
-
+    //devtools.log("build event list");
     if (eventsForSelectedDay == null || eventsForSelectedDay.isEmpty) {
       return const Center(
         child: Text('No events for the selected day.'),
       );
     }
-
+    devtools.log("build event list");
     return ListView.builder(
       itemCount: eventsForSelectedDay.length,
       itemBuilder: (context, index) {
@@ -105,27 +162,84 @@ class _CalendarScreenState extends State<CalendarScreen> {
         );
       },
     );
-  }
+  } 
 
-  void _fetchEvents(DateTime day) async {
+  void _fetchAllEvents(DateTime day) async {
     final user = FirebaseAuth.instance.currentUser;
     final userId = user!.uid;
 
+    for (var date = day; date.isBefore(date.add(const Duration(days: 14))); date = date.add(const Duration(days: 1))) {
+      final eventsSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('events')
+          .where('date', isEqualTo: date)
+          //.where('date', isGreaterThanOrEqualTo: day)
+          .get();
+
+      devtools.log("fetch all events");
+      final events = eventsSnapshot.docs.map((doc) => '${doc['details']}').toList();
+
+      setState(() {
+        _events[date] = events;
+      });
+    }
+  }
+  
+  void _fetchEvents(DateTime day) async {
+    final user = FirebaseAuth.instance.currentUser;
+    final userId = user!.uid;
     final eventsSnapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(userId)
-        .collection('events')
-        .where('date', isEqualTo: day)
-        .get();
+            .collection('users')
+            .doc(userId)
+            .collection('events')
+            .where('date', isEqualTo: day)
+            //.where('date', isGreaterThanOrEqualTo: day)
+            .get();
 
-    final events = eventsSnapshot.docs.map((doc) => doc['details'] as String).toList();
+        devtools.log("fetch events");
+        final events = eventsSnapshot.docs.map((doc) => '${doc['details']}').toList();
 
-    setState(() {
-      _events[day] = events;
-    });
+        setState(() {
+          _events[day] = events;
+        });
 }
 
+/*
+void _fetchEventsRange(DateTime startDate, DateTime endDate) async {
+  final user = FirebaseAuth.instance.currentUser;
+  final userId = user!.uid;
+
+  final eventsSnapshot = await FirebaseFirestore.instance
+    .collection('users')
+    .doc(userId)
+    .collection('events')
+    .where('date', isGreaterThanOrEqualTo: DateTime.now())
+    //.where('date', isLessThanOrEqualTo: endDate)
+    .get();
+   devtools.log("fetchEventsRange");
+   Map<DateTime, List<dynamic>> eventsMap = Map<DateTime, List<dynamic>>();
+
+  eventsSnapshot.docs.forEach((doc) {
+    final eventDate = (doc['date'] as Timestamp).toDate();
+    final eventDetails = doc['details'] as String;
+
+    if (eventsMap.containsKey(eventDate)) {
+      eventsMap[eventDate]!.add(eventDetails);
+    } else {
+      eventsMap[eventDate] = [eventDetails];
+    }
+  });
+
+  setState(() {
+    _events = eventsMap;
+  });
+}
+*/
+
+
   String _eventDetails = '';
+  int _eventID = 0;
 
   void _addEvent() async {
     // Show a dialog to get event details from the user
@@ -145,7 +259,19 @@ class _CalendarScreenState extends State<CalendarScreen> {
           TextButton(
             onPressed: () {
               // Validate the event details before closing the dialog
+              
               if (_eventDetails.isNotEmpty) {
+                /*
+                NotificationService.showNotification(id: )*/
+                setState(() {
+                  _eventID = UniqueKey().hashCode;
+                });
+                
+                NotificationService().scheduleNotification(
+                            id: _eventID,
+                            title: "BetaAlpha",
+                            body: _eventDetails,
+                            scheduledNotificationDateTime: DateTime.now().add(const Duration(seconds: 10)));
                 Navigator.of(context).pop(_eventDetails);
               } else {
                 // Show an error message if the event details are empty
@@ -156,7 +282,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
                     content: const Text('Please enter event details.'),
                     actions: [
                       TextButton(
-                        onPressed: () => Navigator.of(context).pop(),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
                         child: const Text('OK'),
                       ),
                     ],
@@ -188,6 +316,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
       await eventRef.set({
         'date': _selectedDay,
         'details': eventDetails,
+        'notification id': _eventID
       });
 
       // Update the events map to reflect the newly added event
@@ -213,6 +342,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   // Delete the event document
   await eventSnapshot.docs.first.reference.delete();
+
+  //Get event notif id to delete scheduled notification
+  Map<String, dynamic> eventData = eventSnapshot.docs[0].data();
+  int notifID = eventData['notification id'];
+
+  NotificationService().cancelNotification(notifID);
+
+  
 
   // Update the events map to reflect the deleted event
   setState(() {

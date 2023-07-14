@@ -7,6 +7,10 @@ import 'package:google_mlkit_commons/google_mlkit_commons.dart';
 
 import 'package:path_provider/path_provider.dart';
 import 'dart:developer' as devtools show log;
+import 'package:orbital_app/pages/upload_video/video_player_view.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:video_player/video_player.dart';
+
 
 class CameraView extends StatefulWidget {
   CameraView(
@@ -26,6 +30,7 @@ class CameraView extends StatefulWidget {
   final Function(CameraLensDirection direction)? onCameraLensDirectionChanged;
   final CameraLensDirection initialCameraLensDirection;
 
+
   @override
   State<CameraView> createState() => _CameraViewState();
 }
@@ -42,6 +47,8 @@ class _CameraViewState extends State<CameraView> {
   double _currentExposureOffset = 0.0;
   bool _changingCameraLens = false;
   late String videoPath;
+  bool _isVideoPlaying = false;
+
 
   @override
   void initState() {
@@ -88,6 +95,7 @@ class _CameraViewState extends State<CameraView> {
 
       // Start recording
       await _controller!.startVideoRecording();
+      devtools.log("start");
     }
     return;
   }
@@ -101,17 +109,29 @@ class _CameraViewState extends State<CameraView> {
     // Stop recording
     await _controller!.stopVideoRecording();
 
-    devtools.log("1");
+    devtools.log("stop");
 
     // Save the video path
     setState(() {
       this.videoPath = videoPath;
+      devtools.log("video path set");
     });
 
-    devtools.log("2");
+    
 
     // Save the video file
     final File videoFile = File(videoPath);
+
+    VideoPlayerView(
+            url: videoPath,
+            dataSourceType: DataSourceType.file,
+            onVideoStart: () {
+              setState(() {
+                _isVideoPlaying = true;
+              });
+            },
+            
+    );
 
     devtools.log(videoPath);
 
@@ -126,6 +146,8 @@ class _CameraViewState extends State<CameraView> {
   Widget build(BuildContext context) {
     return Scaffold(body: _liveFeedBody());
   }
+
+  
 
   Widget _liveFeedBody() {
     if (_cameras.isEmpty) return Container();
@@ -153,10 +175,25 @@ class _CameraViewState extends State<CameraView> {
           _exposureControl(),
           _startRecording(),
           _stopRecording(),
+          instructions(),
         ],
       ),
     );
   }
+
+  Widget instructions() => const Positioned(
+    top: 40,
+    left: 60,
+    child: SizedBox(
+      child: Text('Record your screen for review!',
+        style: TextStyle(
+            color: Colors.black,
+            fontSize: 20,
+            fontWeight: FontWeight.bold
+        )
+      ),
+    )
+  );
 
   Widget _backButton() => Positioned(
         top: 40,
@@ -168,7 +205,7 @@ class _CameraViewState extends State<CameraView> {
             heroTag: Object(),
             onPressed: () => Navigator.of(context).pop(),
             backgroundColor: Colors.black54,
-            child: Icon(
+            child: const Icon(
               Icons.arrow_back_ios_outlined,
               size: 20,
             ),
@@ -186,7 +223,7 @@ class _CameraViewState extends State<CameraView> {
             heroTag: Object(),
             onPressed: widget.onDetectorViewModeChanged,
             backgroundColor: Colors.black54,
-            child: Icon(
+            child: const Icon(
               Icons.photo_library_outlined,
               size: 25,
             ),
@@ -252,7 +289,7 @@ class _CameraViewState extends State<CameraView> {
                     child: Center(
                       child: Text(
                         '${_currentZoomLevel.toStringAsFixed(1)}x',
-                        style: TextStyle(color: Colors.white),
+                        style: const TextStyle(color: Colors.white),
                       ),
                     ),
                   ),
@@ -267,7 +304,7 @@ class _CameraViewState extends State<CameraView> {
         top: 40,
         right: 8,
         child: ConstrainedBox(
-          constraints: BoxConstraints(
+          constraints: const BoxConstraints(
             maxHeight: 250,
           ),
           child: Column(children: [
@@ -282,7 +319,7 @@ class _CameraViewState extends State<CameraView> {
                 child: Center(
                   child: Text(
                     '${_currentExposureOffset.toStringAsFixed(1)}x',
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ),
                 ),
               ),

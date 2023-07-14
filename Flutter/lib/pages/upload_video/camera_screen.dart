@@ -127,7 +127,7 @@ class  CameraScreenState extends State <CameraScreen> {
                           if(file != null) {
                             Navigator.push(context,
                               MaterialPageRoute(builder: (context) => PoseDetectorView(file: file)));
-                            print("Picture saved to ${file.path}");
+                            devtools.log("Picture saved to ${file.path}");
                           }
                         }
                       });
@@ -138,7 +138,7 @@ class  CameraScreenState extends State <CameraScreen> {
                   GestureDetector(
                     onTap: () {
                       startRecordingVideo();
-                      print("Video saved to ${this.videoPath}");
+                      devtools.log("Video saved to ${this.videoPath}");
                     },
                     child: button(Icons.start, Alignment.bottomCenter),
                   ),

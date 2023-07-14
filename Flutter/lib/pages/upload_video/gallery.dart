@@ -4,7 +4,9 @@ import 'package:orbital_app/components/video_data_server.dart';
 import 'upload_video_page.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 import 'camera_screen.dart';
- 
+import 'package:orbital_app/pages/google_mlkit/pose_dectector.dart';
+import 'package:path_provider/path_provider.dart';
+
 class GalleryPage extends StatefulWidget {
   @override
   _GalleryPage createState() => _GalleryPage();
@@ -57,8 +59,12 @@ class _GalleryPage extends State<GalleryPage> {
             FloatingActionButton(
               child: const Icon(Icons.camera),
               onPressed: () {
+                /*
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => CameraScreen()));
+                */
+                Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => PoseDetectorView()));
               },
             ),
             FutureBuilder(

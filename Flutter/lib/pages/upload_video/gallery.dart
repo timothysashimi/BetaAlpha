@@ -6,6 +6,9 @@ import 'upload_video_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
+import 'camera_screen.dart';
+import 'package:orbital_app/pages/google_mlkit/pose_dectector.dart';
+import 'package:path_provider/path_provider.dart';
 
 class GalleryPage extends StatefulWidget {
   const GalleryPage({Key? key}) : super(key: key);

@@ -11,7 +11,7 @@ cloudinary.config(cloud_name = os.getenv("CLOUD_NAME"), api_key=os.getenv("API_K
     api_secret=os.getenv("API_SECRET"))
 
 
-net = cv.dnn.readNetFromTensorflow("graph_opt.pb") #weights
+net = cv.dnn.readNetFromTensorflow("Flask_orbital\graph_opt.pb") #weights
 
 inWidth = 368
 inHeight = 368
@@ -38,7 +38,7 @@ def pose_estimation(video_path):
         cap = cv.VideoCapture(0)
     if not cap.isOpened():
         raise IOError("Cannot open video")
-
+        
     fourcc = cv.VideoWriter_fourcc(*'mp4v')
     output_video = cv.VideoWriter("output_video.mp4", fourcc, cap.get(cv.CAP_PROP_FPS),
                                   (int(cap.get(cv.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv.CAP_PROP_FRAME_HEIGHT))))
@@ -88,7 +88,7 @@ def pose_estimation(video_path):
                 cv.ellipse(frame, points[idFrom], (3, 3), 0, 0, 360, (0, 0, 255), cv.FILLED)
                 cv.ellipse(frame, points[idTo], (3, 3), 0, 0, 360, (0, 0, 255), cv.FILLED)
 
-        t, _ = net.getPerfProfile() 
+        t, _ = net.getPerfProfile()
         freq = cv.getTickFrequency() / 1000
         cv.putText(frame, '%.2fms' % (t / freq), (10, 20), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0))
         output_video.write(frame)

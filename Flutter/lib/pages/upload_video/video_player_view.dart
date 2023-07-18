@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:video_player/video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:chewie/chewie.dart';
+import 'dart:developer' as devtools show log;
+
 
 class VideoPlayerView extends StatefulWidget {
   const VideoPlayerView({
@@ -48,6 +50,7 @@ class _VideoPlayerView extends State<VideoPlayerView> {
 
   @override
   Widget build(BuildContext context) {
+    devtools.log("video path sent");
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

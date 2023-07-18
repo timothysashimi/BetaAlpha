@@ -42,10 +42,7 @@ class _ProgScreen extends State<ProgScreen> {
                         fontSize: 16,
                         fontWeight: FontWeight.bold
                       )))
-                /*Align(
-                  alignment: Alignment.centerLeft, 
-                  child: Text(widget.trainingProgram)
-                )*/
+                
   );
                 
 }

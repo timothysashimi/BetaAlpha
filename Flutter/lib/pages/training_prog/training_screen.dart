@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:orbital_app/pages/training_prog/climbing_training.dart';
+import 'package:orbital_app/pages/training_prog/physical_training.dart';
+
+
 
 class TrainingScreen extends StatefulWidget {
   const TrainingScreen({super.key});
@@ -48,6 +52,8 @@ class _TrainingScreen extends State<TrainingScreen> {
                     ],
                   ),
                   onPressed: () {
+                    Navigator.push(
+                        context, MaterialPageRoute(builder: (_) => ClimbingTrainingScreen()));
         
                   },
                 ),
@@ -72,7 +78,8 @@ class _TrainingScreen extends State<TrainingScreen> {
                     ],
                   ),
                   onPressed: () {
-        
+                    Navigator.push(
+                        context, MaterialPageRoute(builder: (_) => PhysicalTrainingScreen()));        
                   },
                 ),
               );

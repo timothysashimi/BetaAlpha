@@ -38,62 +38,60 @@ class _CalendarScreenState extends State<CalendarScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Training Calendar'),
-      ),
-      body: Column(
-        children: [
-          TableCalendar(
-            firstDay: DateTime.utc(2010, 1, 1),
-            lastDay: DateTime.utc(2099, 12, 31),
-            focusedDay: _focusedDay,
-            calendarFormat: _calendarFormat,
-            selectedDayPredicate: (day) {
-              // Use `selectedDayPredicate` to determine which day is currently selected.
-              // If this returns true, then `day` will be marked as selected.
+        appBar: AppBar(
+          title: const Text('Training Calendar'),
+        ),
+        body: Column(
+          children: [
+            TableCalendar(
+              firstDay: DateTime.utc(2010, 1, 1),
+              lastDay: DateTime.utc(2099, 12, 31),
+              focusedDay: _focusedDay,
+              calendarFormat: _calendarFormat,
+              selectedDayPredicate: (day) {
+                // Use `selectedDayPredicate` to determine which day is currently selected.
+                // If this returns true, then `day` will be marked as selected.
 
-              // Using `isSameDay` is recommended to disregard
-              // the time-part of compared DateTime objects.
-              //_fetchEventsRange(_selectedDay, _selectedDay.add(const Duration(days: 14)));
-              return isSameDay(_selectedDay, day);
-            },
-            onDaySelected: (selectedDay, focusedDay) {
-              if (!isSameDay(_selectedDay, selectedDay)) {
-                
-                // Call `setState()` when updating the selected day
-                setState(() {
-                  _selectedDay = selectedDay;
-                  _focusedDay = focusedDay;
-                });
-              }
-              //_fetchEventsRange(_selectedDay, _selectedDay.add(const Duration(days: 14)));
-              for (var date = _selectedDay.subtract(const Duration(days: 30)); date.isBefore(_selectedDay.add(const Duration(days: 30))); 
-                date = date.add(const Duration(days: 1))) {
-
-                _fetchEvents(date);
-              }
-              //_fetchEventsRange(_focusedDay, _focusedDay.add(const Duration(days: 14)));
-              devtools.log("fetch event called");
-            },
-            onFormatChanged: (format) {
-              if (_calendarFormat != format) {
-                // Call `setState()` when updating calendar format
-                setState(() {
-                  _calendarFormat = format;
-                });
-              }
-            },
-            onPageChanged: (focusedDay) {
-              // No need to call `setState()` here
-              _focusedDay = focusedDay;
-            },
-            eventLoader: (date) {
-                  return _events[date] ?? [];
-            },
-          ),
-
-          const SizedBox(height: 16),
-          /*
+                // Using `isSameDay` is recommended to disregard
+                // the time-part of compared DateTime objects.
+                //_fetchEventsRange(_selectedDay, _selectedDay.add(const Duration(days: 14)));
+                return isSameDay(_selectedDay, day);
+              },
+              onDaySelected: (selectedDay, focusedDay) {
+                if (!isSameDay(_selectedDay, selectedDay)) {
+                  // Call `setState()` when updating the selected day
+                  setState(() {
+                    _selectedDay = selectedDay;
+                    _focusedDay = focusedDay;
+                  });
+                }
+                //_fetchEventsRange(_selectedDay, _selectedDay.add(const Duration(days: 14)));
+                for (var date = _selectedDay.subtract(const Duration(days: 30));
+                    date.isBefore(_selectedDay.add(const Duration(days: 30)));
+                    date = date.add(const Duration(days: 1))) {
+                  _fetchEvents(date);
+                }
+                //_fetchEventsRange(_focusedDay, _focusedDay.add(const Duration(days: 14)));
+                devtools.log("fetch event called");
+              },
+              onFormatChanged: (format) {
+                if (_calendarFormat != format) {
+                  // Call `setState()` when updating calendar format
+                  setState(() {
+                    _calendarFormat = format;
+                  });
+                }
+              },
+              onPageChanged: (focusedDay) {
+                // No need to call `setState()` here
+                _focusedDay = focusedDay;
+              },
+              eventLoader: (date) {
+                return _events[date] ?? [];
+              },
+            ),
+            const SizedBox(height: 16),
+            /*
           SizedBox(
             width: 130,
             child: TextButton(
@@ -107,38 +105,26 @@ class _CalendarScreenState extends State<CalendarScreen> {
               child: const Text('Get all events'),
             ),
           ), */
-          const SizedBox(
+            const SizedBox(
               child: Text('Click on a date to get all events!',
-                style: TextStyle(
-                    color: Colors.blue,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold
-                )
-              ),
+                  style: TextStyle(
+                      color: Colors.blue,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold)),
             ),
-          
-          const SizedBox(height: 16),
-
-          ElevatedButton(
+            const SizedBox(height: 16),
+            ElevatedButton(
               onPressed: _addEvent,
               child: const Text('Add Event'),
             ),
-          
-
-              
-           
-          const SizedBox(height: 16),
-          Expanded(
-           child: _buildEventList(),
-          ),
-        ],
-      )
-    
-
-    );
+            const SizedBox(height: 16),
+            Expanded(
+              child: _buildEventList(),
+            ),
+          ],
+        ));
   }
-  
-  
+
   Widget _buildEventList() {
     final eventsForSelectedDay = _events[_selectedDay];
     //devtools.log("build event list");
@@ -161,48 +147,52 @@ class _CalendarScreenState extends State<CalendarScreen> {
             ));
       },
     );
-  } 
+  }
 
   void _fetchAllEvents(DateTime day) async {
     final user = FirebaseAuth.instance.currentUser;
     final userId = user!.uid;
 
-    for (var date = day; date.isBefore(date.add(const Duration(days: 14))); date = date.add(const Duration(days: 1))) {
+    for (var date = day;
+        date.isBefore(date.add(const Duration(days: 14)));
+        date = date.add(const Duration(days: 1))) {
       final eventsSnapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userId)
+          .collection('userProfile')
+          .doc(user.email)
           .collection('events')
           .where('date', isEqualTo: date)
           //.where('date', isGreaterThanOrEqualTo: day)
           .get();
 
       devtools.log("fetch all events");
-      final events = eventsSnapshot.docs.map((doc) => '${doc['details']}').toList();
+      final events =
+          eventsSnapshot.docs.map((doc) => '${doc['details']}').toList();
 
       setState(() {
         _events[date] = events;
       });
     }
   }
-  
+
   void _fetchEvents(DateTime day) async {
     final user = FirebaseAuth.instance.currentUser;
     final userId = user!.uid;
     final eventsSnapshot = await FirebaseFirestore.instance
-            .collection('userProfile')
-            .doc(user.email)
-            .collection('events')
-            .where('date', isEqualTo: day)
-            //.where('date', isGreaterThanOrEqualTo: day)
-            .get();
+        .collection('userProfile')
+        .doc(user.email)
+        .collection('events')
+        .where('date', isEqualTo: day)
+        //.where('date', isGreaterThanOrEqualTo: day)
+        .get();
 
-        devtools.log("fetch events");
-        final events = eventsSnapshot.docs.map((doc) => '${doc['details']}').toList();
+    devtools.log("fetch events");
+    final events =
+        eventsSnapshot.docs.map((doc) => '${doc['details']}').toList();
 
-        setState(() {
-          _events[day] = events;
-        });
-}
+    setState(() {
+      _events[day] = events;
+    });
+  }
 
 /*
 void _fetchEventsRange(DateTime startDate, DateTime endDate) async {
@@ -236,7 +226,6 @@ void _fetchEventsRange(DateTime startDate, DateTime endDate) async {
 }
 */
 
-
   String _eventDetails = '';
   int _eventID = 0;
 
@@ -258,19 +247,19 @@ void _fetchEventsRange(DateTime startDate, DateTime endDate) async {
           TextButton(
             onPressed: () {
               // Validate the event details before closing the dialog
-              
+
               if (_eventDetails.isNotEmpty) {
                 /*
                 NotificationService.showNotification(id: )*/
                 setState(() {
                   _eventID = UniqueKey().hashCode;
                 });
-                
+
                 NotificationService().scheduleNotification(
-                            id: _eventID,
-                            title: "BetaAlpha",
-                            body: _eventDetails,
-                            scheduledNotificationDateTime: _selectedDay);
+                    id: _eventID,
+                    title: "BetaAlpha",
+                    body: _eventDetails,
+                    scheduledNotificationDateTime: _selectedDay);
                 Navigator.of(context).pop(_eventDetails);
               } else {
                 // Show an error message if the event details are empty
@@ -342,13 +331,13 @@ void _fetchEventsRange(DateTime startDate, DateTime endDate) async {
 
     // Delete the event document
     await eventSnapshot.docs.first.reference.delete();
-    
-     //Get event notif id to delete scheduled notification
+
+    //Get event notif id to delete scheduled notification
     Map<String, dynamic> eventData = eventSnapshot.docs[0].data();
     int notifID = eventData['notification id'];
 
     NotificationService().cancelNotification(notifID);
-    
+
     // Update the events map to reflect the deleted event
     setState(() {
       _events[_selectedDay]!.remove(event);

@@ -7,6 +7,9 @@ import 'package:orbital_app/pages/profile/profile_page.dart';
 import 'package:orbital_app/pages/calendar.dart';
 import 'package:orbital_app/pages/home_page_widgets/line_chart_widget.dart';
 import 'package:orbital_app/pages/training_prog/training_screen.dart';
+import 'package:orbital_app/pages/google_mlkit/pose_dectector.dart';
+import 'package:path_provider/path_provider.dart';
+
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
@@ -112,6 +115,36 @@ class HomePage extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                         context, MaterialPageRoute(builder: (_) => TrainingScreen()));
+                  },
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 30),
+          Row(
+            children: [
+              const SizedBox(width: 20),
+              SizedBox(
+                height: 50,
+                width: 210,
+                child: ElevatedButton(
+                  
+                  style: ElevatedButton.styleFrom(
+                    shape:RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                    backgroundColor: Colors.deepOrangeAccent
+                  ),
+                  child: Row(
+                    children: [
+                      const Text("Do a live recording!"),
+                      SizedBox(width:10),
+                      Icon(Icons.camera)
+                    ],
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                        context, MaterialPageRoute(builder: (_) => PoseDetectorView()));
                   },
                 ),
               ),

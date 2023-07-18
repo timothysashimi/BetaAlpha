@@ -1,15 +1,19 @@
 import 'package:orbital_app/pages/auth_page.dart';
-import 'package:orbital_app/pages/create_account.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:orbital_app/pages/login_page.dart';
 import 'package:orbital_app/pages/forgot_password.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloudinary_url_gen/cloudinary.dart';
+import 'package:cloudinary_flutter/image/cld_image.dart';
+import 'package:cloudinary_flutter/cloudinary_context.dart';
 
 import 'package:flutter/material.dart';
 
 void main() async {
+  CloudinaryContext.cloudinary =
+      Cloudinary.fromCloudName(cloudName: "dbdziejej");
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -33,7 +37,6 @@ void main() async {
       //Define app routes
       //initialRoute: '/',
       routes: {
-        '/CreateAccountPage': (context) => const CreateAccountPage(),
         '/ForgotPasswordPage': (context) => const ForgotPasswordPage(),
       },
     ),

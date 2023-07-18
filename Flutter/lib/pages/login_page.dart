@@ -18,7 +18,7 @@ class _LoginPage extends State<LoginPage> {
   final passwordController = TextEditingController();
 
   // sign user in method
-  void signUserIn() async {
+  Future<void> signUserIn() async {
     //show loading circle
     showDialog(
       context: context,
@@ -31,14 +31,38 @@ class _LoginPage extends State<LoginPage> {
 
     // method to display error message
     void showErrorMessage(String message) {
+      String errorMessage;
+      switch (message) {
+        case 'invalid-email':
+          errorMessage = 'Invalid email address';
+          break;
+        case 'user-disabled':
+          errorMessage =
+              'The user corresponding to this email has been disabled';
+          break;
+        case 'user-not-found':
+          errorMessage = 'User not found';
+          break;
+        case 'wrong-password':
+          errorMessage = 'Invalid password';
+          break;
+        case 'weak-password':
+          errorMessage = 'Password requires at least 6 characters';
+          break;
+        case 'email-already-in-use':
+          errorMessage = 'Email is already in use';
+          break;
+        default:
+          errorMessage = message;
+      }
       showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
             title: Center(
               child: Text(
-                message,
-                style: const TextStyle(color: Colors.white),
+                errorMessage,
+                style: const TextStyle(color: Colors.black),
               ),
             ),
           );
@@ -143,16 +167,13 @@ class _LoginPage extends State<LoginPage> {
                     SizedBox(
                       width: 100,
                       child: TextButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/CreateAccountPage');
-                        }, //annoymous function that does not have functionality yet
+                        onPressed: widget.onTap,
                         style: TextButton.styleFrom(
                           foregroundColor: Color(
                               int.parse("#389ce4".substring(1, 7), radix: 16) +
                                   0xFF000000), //just style the button
                         ),
-                        child: GestureDetector(
-                            onTap: widget.onTap, child: const Text('Sign up')),
+                        child: const Text('Sign up'),
                       ),
                     ),
                   ],

@@ -15,7 +15,6 @@ class CalendarScreen extends StatefulWidget {
 }
 
 class _CalendarScreenState extends State<CalendarScreen> {
-  
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime _selectedDay = DateTime.now();
@@ -24,64 +23,63 @@ class _CalendarScreenState extends State<CalendarScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Training Calendar'),
-      ),
-      body: Column(
-        children: [
-          TableCalendar(
-            firstDay: DateTime.utc(2010, 1, 1),
-            lastDay: DateTime.utc(2099, 12, 31),
-            focusedDay: _focusedDay,
-            calendarFormat: _calendarFormat,
-            selectedDayPredicate: (day) {
-              // Use `selectedDayPredicate` to determine which day is currently selected.
-              // If this returns true, then `day` will be marked as selected.
+        appBar: AppBar(
+          title: const Text('Training Calendar'),
+        ),
+        body: Column(
+          children: [
+            TableCalendar(
+              firstDay: DateTime.utc(2010, 1, 1),
+              lastDay: DateTime.utc(2099, 12, 31),
+              focusedDay: _focusedDay,
+              calendarFormat: _calendarFormat,
+              selectedDayPredicate: (day) {
+                // Use `selectedDayPredicate` to determine which day is currently selected.
+                // If this returns true, then `day` will be marked as selected.
 
-              // Using `isSameDay` is recommended to disregard
-              // the time-part of compared DateTime objects.
-              return isSameDay(_selectedDay, day);
-            },
-            onDaySelected: (selectedDay, focusedDay) {
-              if (!isSameDay(_selectedDay, selectedDay)) {
-                // Call `setState()` when updating the selected day
-                setState(() {
-                  _selectedDay = selectedDay;
-                  _focusedDay = focusedDay;
-                });
-              }
-              _fetchEvents(_selectedDay);
-            },
-            onFormatChanged: (format) {
-              if (_calendarFormat != format) {
-                // Call `setState()` when updating calendar format
-                setState(() {
-                  _calendarFormat = format;
-                });
-              }
-            },
-            onPageChanged: (focusedDay) {
-              // No need to call `setState()` here
-              _focusedDay = focusedDay;
-            },
-            eventLoader: (date) {
-                  return _events[date] ?? [];
-            },
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton(
+                // Using `isSameDay` is recommended to disregard
+                // the time-part of compared DateTime objects.
+                return isSameDay(_selectedDay, day);
+              },
+              onDaySelected: (selectedDay, focusedDay) {
+                if (!isSameDay(_selectedDay, selectedDay)) {
+                  // Call `setState()` when updating the selected day
+                  setState(() {
+                    _selectedDay = selectedDay;
+                    _focusedDay = focusedDay;
+                  });
+                }
+                _fetchEvents(_selectedDay);
+              },
+              onFormatChanged: (format) {
+                if (_calendarFormat != format) {
+                  // Call `setState()` when updating calendar format
+                  setState(() {
+                    _calendarFormat = format;
+                  });
+                }
+              },
+              onPageChanged: (focusedDay) {
+                // No need to call `setState()` here
+                _focusedDay = focusedDay;
+              },
+              eventLoader: (date) {
+                return _events[date] ?? [];
+              },
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
               onPressed: _addEvent,
               child: const Text('Add Event'),
             ),
-          const SizedBox(height: 16),
-          Expanded(
-           child: _buildEventList(),
-          ),
-        ],
-      )
-
-    );
+            const SizedBox(height: 16),
+            Expanded(
+              child: _buildEventList(),
+            ),
+          ],
+        ));
   }
+
   Widget _buildEventList() {
     final eventsForSelectedDay = _events[_selectedDay];
 
@@ -97,12 +95,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
         final event = eventsForSelectedDay[index];
 
         return ListTile(
-          title: Text(event),
-          trailing: IconButton(
-          icon: const Icon(Icons.delete),
-          onPressed: () => _deleteEvent(event),
-          )
-        );
+            title: Text(event),
+            trailing: IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () => _deleteEvent(event),
+            ));
       },
     );
   }
@@ -112,18 +109,19 @@ class _CalendarScreenState extends State<CalendarScreen> {
     final userId = user!.uid;
 
     final eventsSnapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(userId)
+        .collection('userProfile')
+        .doc(user.email)
         .collection('events')
         .where('date', isEqualTo: day)
         .get();
 
-    final events = eventsSnapshot.docs.map((doc) => doc['details'] as String).toList();
+    final events =
+        eventsSnapshot.docs.map((doc) => doc['details'] as String).toList();
 
     setState(() {
       _events[day] = events;
     });
-}
+  }
 
   String _eventDetails = '';
 
@@ -179,8 +177,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
       // Create a new document in the 'events' collection of Firestore
       final eventRef = FirebaseFirestore.instance
-          .collection('users')
-          .doc(userId)
+          .collection('userProfile')
+          .doc(user.email)
           .collection('events')
           .doc();
 
@@ -192,31 +190,32 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
       // Update the events map to reflect the newly added event
       setState(() {
-        _events.update(_selectedDay, (value) => [...value, eventDetails], ifAbsent: () => [eventDetails]);
+        _events.update(_selectedDay, (value) => [...value, eventDetails],
+            ifAbsent: () => [eventDetails]);
       });
     }
   }
 
   void _deleteEvent(String event) async {
-  //Find reference to the user in Firebase Firestore
-  final user = FirebaseAuth.instance.currentUser;
-  final userId = user!.uid;
+    //Find reference to the user in Firebase Firestore
+    final user = FirebaseAuth.instance.currentUser;
+    final userId = user!.uid;
 
-  // Find the reference to the event document in Firebase Firestore
-  final eventSnapshot = await FirebaseFirestore.instance
-      .collection('users')
-      .doc(userId)
-      .collection('events')
-      .where('date', isEqualTo: _selectedDay)
-      .where('details', isEqualTo: event)
-      .get();
+    // Find the reference to the event document in Firebase Firestore
+    final eventSnapshot = await FirebaseFirestore.instance
+        .collection('userProfile')
+        .doc(user.email)
+        .collection('events')
+        .where('date', isEqualTo: _selectedDay)
+        .where('details', isEqualTo: event)
+        .get();
 
-  // Delete the event document
-  await eventSnapshot.docs.first.reference.delete();
+    // Delete the event document
+    await eventSnapshot.docs.first.reference.delete();
 
-  // Update the events map to reflect the deleted event
-  setState(() {
-    _events[_selectedDay]!.remove(event);
-  });
-}
+    // Update the events map to reflect the deleted event
+    setState(() {
+      _events[_selectedDay]!.remove(event);
+    });
+  }
 }

@@ -5,7 +5,10 @@ import 'package:video_player/video_player.dart';
 import 'package:orbital_app/pages/upload_video/video_player_view.dart';
 
 class SelectVideo extends StatefulWidget {
-  const SelectVideo({super.key, required this.onVideoSelected});
+  const SelectVideo({
+    super.key,
+    required this.onVideoSelected,
+  });
 
   final void Function(File videoFile) onVideoSelected;
 

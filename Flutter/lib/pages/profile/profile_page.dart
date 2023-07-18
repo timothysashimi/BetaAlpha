@@ -1,7 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:orbital_app/components/text_box.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/services.dart';
+import 'dart:io';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -14,6 +19,8 @@ class _ProfilePageState extends State<ProfilePage> {
   final currentUser = FirebaseAuth.instance.currentUser!;
   //all users
   final usersCollection = FirebaseFirestore.instance.collection("userProfile");
+  final double coverHeight = 280;
+  final double profileHeight = 144;
 
   //edit field
   Future<void> editField(String field) async {
@@ -64,6 +71,32 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  Widget buildCoverImage() => Container(
+        color: Colors.grey,
+        child: Image.asset('assets/janja.jpeg',
+            width: double.infinity, height: coverHeight, fit: BoxFit.cover),
+      );
+
+  Widget buildProfileImage() => CircleAvatar(
+        radius: profileHeight / 2,
+        backgroundColor: Colors.grey.shade800,
+        backgroundImage: const AssetImage('assets/person.jpeg'),
+      );
+
+  Widget buildTop() {
+    final top = coverHeight - profileHeight / 2;
+    return Stack(
+        clipBehavior: Clip.none,
+        alignment: Alignment.center,
+        children: [
+          buildCoverImage(),
+          Positioned(
+            top: top,
+            child: buildProfileImage(),
+          ),
+        ]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,12 +115,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 final userData = snapshot.data!.data() as Map<String, dynamic>;
 
                 return ListView(children: [
-                  const SizedBox(height: 50),
-                  const Icon(
-                    Icons.person,
-                    size: 72,
-                  ),
-                  const SizedBox(height: 10),
+                  buildTop(),
+                  const SizedBox(height: 80),
                   Text(
                     currentUser.email!,
                     textAlign: TextAlign.center,
@@ -110,7 +139,12 @@ class _ProfilePageState extends State<ProfilePage> {
                   MyTextBox(
                       text: userData['bio'],
                       sectionName: 'Bio',
-                      onPressed: () => editField('username'))
+                      onPressed: () => editField('bio')),
+                  //goal
+                  MyTextBox(
+                      text: userData['goal'],
+                      sectionName: 'Current Goal',
+                      onPressed: () => editField('goal')),
                 ]);
               } else if (snapshot.hasError) {
                 return Center(

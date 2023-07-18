@@ -1,23 +1,15 @@
-# from flask import Flask, jsonify, request
-# import time
-
-# app = Flask(__name__)
-# @app.route("/betaalpha", method = ["POST"])
-
-# #response
-# def response():
-#     query = dict(request.form)['query']
-#     result = query + " " + time.ctime()
-#     return jsonify({"response" : result})
-
-# if __name__ == "__main__":
-#     app.run(host = "0.0.0.0",) 
-
-
-#python script
 import cv2 as cv
 import matplotlib.pyplot as plt
 import os
+import cloudinary
+import cloudinary.uploader
+from dotenv import load_dotenv
+
+load_dotenv()
+
+cloudinary.config(cloud_name = os.getenv("CLOUD_NAME"), api_key=os.getenv("API_KEY"), 
+    api_secret=os.getenv("API_SECRET"))
+
 
 net = cv.dnn.readNetFromTensorflow("Flask_orbital\graph_opt.pb") #weights
 
@@ -37,6 +29,7 @@ POSE_PAIRS = [ ["Neck", "RShoulder"], ["Neck", "LShoulder"], ["RShoulder", "RElb
                 ["REye", "REar"], ["Nose", "LEye"], ["LEye", "LEar"] ]
 
 def pose_estimation(video_path):
+
     cap = cv.VideoCapture(video_path)
     #cap.set(3, 800)
     #cap.set(4, 800)
@@ -45,6 +38,10 @@ def pose_estimation(video_path):
         cap = cv.VideoCapture(0)
     if not cap.isOpened():
         raise IOError("Cannot open video")
+        
+    fourcc = cv.VideoWriter_fourcc(*'mp4v')
+    output_video = cv.VideoWriter("output_video.mp4", fourcc, cap.get(cv.CAP_PROP_FPS),
+                                  (int(cap.get(cv.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv.CAP_PROP_FRAME_HEIGHT))))
 
     while cv.waitKey(1) < 0:
         hasFrame, frame = cap.read()
@@ -94,9 +91,23 @@ def pose_estimation(video_path):
         t, _ = net.getPerfProfile()
         freq = cv.getTickFrequency() / 1000
         cv.putText(frame, '%.2fms' % (t / freq), (10, 20), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0))
+        output_video.write(frame)
+        #cv.imshow('Video analysed', frame)
+    
+    cap.release()
+    output_video.release()
+    cv.destroyAllWindows()
+    # Upload the video buffer to Cloudinary
+    response = cloudinary.uploader.upload_large("output_video.mp4", resource_type="video", secure=True, transformation=[
+    {'fetch_format': "auto"}
+])
 
-        cv.imshow('Video analysed', frame)
-    return frame
+    #https_url = response['url'].replace("http://", "https://")
 
-pose_estimation(r"C:\Users\Timothy Chan\Documents\Orbital\IMG_1384.MOV")
+    # Delete the local video file
+    os.remove("output_video.mp4")
+    print(response['secure_url'])
+    return response['secure_url']
 
+
+#pose_estimation("C:\\Users\\User\\Pictures\\IMG_8276.MOV")

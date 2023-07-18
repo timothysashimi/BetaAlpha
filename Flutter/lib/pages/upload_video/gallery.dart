@@ -1,164 +1,189 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:orbital_app/components/video_data_server.dart';
+import 'package:orbital_app/components/video_object.dart';
+import 'package:orbital_app/components/gallery_video_player.dart';
 import 'upload_video_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 import 'camera_screen.dart';
 import 'package:orbital_app/pages/google_mlkit/pose_dectector.dart';
 import 'package:path_provider/path_provider.dart';
 
 class GalleryPage extends StatefulWidget {
+  const GalleryPage({Key? key}) : super(key: key);
+
   @override
-  _GalleryPage createState() => _GalleryPage();
+  _GalleryPageState createState() => _GalleryPageState();
 }
 
-class _GalleryPage extends State<GalleryPage> {
-  late Future<List<VideoDataServer>> list;
-  late List<VideoDataServer> _searchList;
-  late List<VideoDataServer> aux_list;
-  TextEditingController _searchController = new TextEditingController();
-  bool _search = false;
+class _GalleryPageState extends State<GalleryPage> {
+  final currentUser = FirebaseAuth.instance.currentUser!;
+  final usersCollection = FirebaseFirestore.instance.collection("userProfile");
+  List<VideoObject> videos = [];
 
-  @override
-  void initState() {
-    // TODO: implement initState
+  String filter = '';
 
-    list = loadVideo();
-    aux_list = [];
-
-    _searchController.addListener(() {
-      _searchList = aux_list
-          .where((i) => i.title.startsWith(_searchController.text))
-          .toList();
-      _search = true;
-      // onChip = getMemebrs(originaList);
-
-      setState(() {});
+  Future<void> _refreshVideos() async {
+    await Future.delayed(Duration(seconds: 2));
+    setState(() {
+      videos = []; // Clear the existing video list
     });
 
-    super.initState();
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('userProfile')
+          .doc(currentUser.email)
+          .collection('videos')
+          .get();
+
+      List<VideoObject> updatedVideos = snapshot.docs
+          .map<VideoObject>((doc) => VideoObject.fromSnapshot(doc))
+          .where((video) =>
+              video.title.toLowerCase().contains(filter.toLowerCase()))
+          .toList();
+
+      setState(() {
+        videos = updatedVideos; // Update the video list with new data
+      });
+    } catch (e) {
+      print('Error refreshing videos: $e');
+      // Handle any error that occurred while refreshing videos
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
-        appBar: AppBar(title: Text("Gallery"), bottom: getSearchBar()),
-
-        body: Column(
-          children: [
-            const SizedBox(height: 450),
-            FloatingActionButton(
-              child: Icon(Icons.cloud),
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => UploadVideoPage()));
-              },
-            ),
-            const SizedBox(height: 30),
-            FloatingActionButton(
-              child: const Icon(Icons.camera),
-              onPressed: () {
-                /*
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => CameraScreen()));
-                */
-                Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => PoseDetectorView()));
-              },
-            ),
-            FutureBuilder(
-                future: list,
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.hasError)
-                    return new Text('Error: ${snapshot.error}');
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.waiting:
-                      return new LinearProgressIndicator(
-                        backgroundColor: Colors.deepPurpleAccent,
-                      );
-                    default:
-                      if (_search == true) {
-                        return GridView.count(
-                            crossAxisCount: 2,
-                            children:
-                                List<Widget>.generate(_searchList.length, (index) {
-                              return GridVideo(
-                                _searchList[index].title,
-                                _searchList[index].description,
-                                _searchList[index].userID,
-                                _searchList[index].uri,
-                              );
-                            }));
-                      } else {
-                        return GridView.count(
-                            crossAxisCount: 2,
-                            children: List<Widget>.generate(snapshot.data.length,
-                                (index) {
-                              aux_list.add(VideoDataServer(
-                                snapshot.data[index].title,
-                                snapshot.data[index].description,
-                                snapshot.data[index].userID,
-                                snapshot.data[index].uri,
-                              ));
-                              return GridVideo(
-                                snapshot.data[index].title,
-                                snapshot.data[index].description,
-                                snapshot.data[index].userID,
-                                snapshot.data[index].uri,
-                              );
-                            }));
-                      }
-                  }
-                }),
-          ],
-        ));
-  }
-
-  getSearchBar() {
-    return PreferredSize(
-        preferredSize: Size.fromHeight(80.0),
-        child: Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Card(
-            child: ListTile(
-              trailing: IconButton(
-                icon: Icon(Icons.search),
-                onPressed: () {},
-              ),
-              title: TextField(
-                controller: _searchController,
-                decoration: InputDecoration(
-                    hintText: 'Search image  ', border: InputBorder.none),
-              ),
-            ),
-          ),
-        ));
-  }
-}
-
-class GridVideo extends StatelessWidget {
-  String title;
-  String description;
-  String userID;
-  String uri;
-
-  GridVideo(this.title, this.description, this.userID, this.uri);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Card(
+      appBar: AppBar(
+        title: Text('Video Gallery'),
+      ),
+      body: RefreshIndicator(
+        onRefresh: _refreshVideos,
         child: Column(
-          children: <Widget>[
-            Image.network(
-              uri,
-              fit: BoxFit.cover,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: TextField(
+                onChanged: (value) {
+                  setState(() {
+                    filter = value;
+                  });
+                },
+                decoration: InputDecoration(
+                  labelText: 'Search',
+                  prefixIcon: Icon(Icons.search),
+                  border: OutlineInputBorder(),
+                ),
+              ),
             ),
-            Text("Title: $title"),
-            Text("Description: $description"),
+            Expanded(
+              child: StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('userProfile')
+                    .doc(currentUser.email)
+                    .collection('videos')
+                    .snapshots(),
+                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Text('Error: ${snapshot.error}'),
+                    );
+                  }
+                  // Filter videos based on search query
+                  videos = snapshot.data!.docs
+                      .map<VideoObject>((doc) => VideoObject.fromSnapshot(doc))
+                      .where((video) => video.title
+                          .toLowerCase()
+                          .contains(filter.toLowerCase()))
+                      .toList();
+
+                  return GridView.builder(
+                    padding: const EdgeInsets.all(16.0),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 16.0,
+                      mainAxisSpacing: 16.0,
+                    ),
+                    itemCount: videos.length,
+                    itemBuilder: (context, index) {
+                      VideoObject video = videos[index];
+                      return Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8.0),
+                          border: Border.all(
+                            color: Colors.black,
+                            width: 2.0,
+                          ),
+                        ),
+                        child: GridTile(
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      GalleryVideoPlayerPage(video: video),
+                                ),
+                              );
+                            },
+                            child: Stack(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    image: DecorationImage(
+                                      image: NetworkImage(
+                                          video.url.replaceAll('.mp4', '.jpg')),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  bottom: 0,
+                                  left: 0,
+                                  right: 0,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(8.0),
+                                    color: Colors.black54,
+                                    child: Text(
+                                      video.title,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14.0,
+                                        letterSpacing: 1.2,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.upload),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => UploadVideoPage()),
+          );
+        },
       ),
     );
   }

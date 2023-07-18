@@ -18,8 +18,74 @@ class _RegisterPage extends State<RegisterPage> {
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  // method to display error message
+  void showErrorMessage(String message) {
+    String errorMessage;
+    switch (message) {
+      case 'invalid-email':
+        errorMessage = 'Invalid email address';
+        break;
+      case 'user-disabled':
+        errorMessage = 'The user corresponding to this email has been disabled';
+        break;
+      case 'user-not-found':
+        errorMessage = 'User not found';
+        break;
+      case 'wrong-password':
+        errorMessage = 'Invalid password';
+        break;
+      case 'weak-password':
+        errorMessage = 'Password requires at least 6 characters';
+        break;
+      case 'email-already-in-use':
+        errorMessage = 'Email is already in use';
+        break;
+      default:
+        errorMessage = message;
+    }
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Center(
+            child: Text(
+              errorMessage,
+              style: const TextStyle(color: Colors.black),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  //yet to use
+  //password validator
+  bool passwordMeetsCriteria(String password) {
+    // Check if password contains at least one letter and one number
+    bool hasLetter = false;
+    bool hasNumber = false;
+
+    for (var char in password.split('')) {
+      if (char.contains(RegExp(r'[a-zA-Z]'))) {
+        hasLetter = true;
+      } else if (char.contains(RegExp(r'[0-9]'))) {
+        hasNumber = true;
+      }
+    }
+
+    return hasLetter && hasNumber;
+  }
+
   // sign user up method
-  void signUserUp() async {
+  Future<void> signUserUp() async {
     //show loading circle
     showDialog(
       context: context,
@@ -30,41 +96,30 @@ class _RegisterPage extends State<RegisterPage> {
       },
     );
 
-    // method to display error message
-    void showErrorMessage(String message) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Center(
-              child: Text(
-                message,
-                style: const TextStyle(color: Colors.white),
-              ),
-            ),
-          );
-        },
-      );
-    }
-
     // creating the user
     try {
-      // check if password is confirm correctly
+      // check if password is confirmed correctly
+      if (!passwordMeetsCriteria(passwordController.text) ||
+          !passwordMeetsCriteria(confirmPasswordController.text)) {
+        throw FirebaseAuthException(
+            code: 'Password should contain at least one letter and one number');
+      }
       if (passwordController.text == confirmPasswordController.text) {
         UserCredential userCredential = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(
                 email: emailController.text, password: passwordController.text);
 
-        String userId = userCredential.user!.uid;
         FirebaseFirestore.instance
             .collection('userProfile')
             .doc(userCredential.user!.email)
             .set({
           'username': emailController.text.split('@')[0],
-          'bio': 'Empty bio...'
+          'bio': 'Empty bio...',
+          'goal': 'Please set your goal for the month',
         });
       } else {
-        showErrorMessage("Passwords don't match!");
+        // Passwords don't match
+        throw FirebaseAuthException(code: 'password-mismatch');
       }
       //pop the loading circle
       Navigator.pop(context);
@@ -72,7 +127,11 @@ class _RegisterPage extends State<RegisterPage> {
       //pop the loading circle
       Navigator.pop(context);
       //show error message
-      showErrorMessage(e.code);
+      if (e.code == 'password-mismatch') {
+        showErrorMessage("Passwords don't match!");
+      } else {
+        showErrorMessage(e.code);
+      }
     }
   }
 

@@ -105,17 +105,36 @@ class _CalendarScreenState extends State<CalendarScreen> {
               child: const Text('Get all events'),
             ),
           ), */
-            const SizedBox(
-              child: Text('Click on a date to get all events!',
-                  style: TextStyle(
+            Column(
+              children: [
+                Container(
+                  alignment: Alignment.center,
+                  child: Text(
+                    'Click on a date to get all events!',
+                    style: TextStyle(
                       color: Colors.blue,
                       fontSize: 16,
-                      fontWeight: FontWeight.bold)),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _addEvent,
-              child: const Text('Add Event'),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  alignment: Alignment.center,
+                  child: ElevatedButton(
+                    onPressed: _addEvent,
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 90), // Adjust the button width
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(30), // Make the edges round
+                      ),
+                    ),
+                    child: Text('Add Event'),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 16),
             Expanded(

@@ -64,6 +64,7 @@ dependencies:
   timezone: ^0.9.2
   flutter_native_timezone_updated_gradle: ^2.0.3
   fl_chart: ^0.62.0
+  flutter_profile_picture: ^2.0.0
   
 
 
@@ -96,6 +97,10 @@ flutter:
     - assets/janja.jpeg
     - assets/person.jpeg
     - assets/mejdi.jpeg
+    - assets/hangboard.jpeg
+    - assets/training.jpeg
+    - assets/magnus.jpeg
+    
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

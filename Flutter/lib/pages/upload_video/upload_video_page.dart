@@ -124,7 +124,7 @@ class _UploadVideoPageState extends State<UploadVideoPage> {
     var length = await _selectedVideo?.length();
 
     //need to change during deployment, ngrok link
-    var uri = Uri.parse('https://ae8c-122-11-214-158.ngrok.io/upload');
+    var uri = Uri.parse('https://1576-220-255-61-133.ngrok.io/upload');
     var request = http.MultipartRequest("POST", uri);
     final headers = {"Content-type": "multipart/form-data"};
     var multipartFile = http.MultipartFile(
@@ -212,6 +212,7 @@ class _UploadVideoPageState extends State<UploadVideoPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Video Analysis'),
+        backgroundColor: Color.fromARGB(255, 66, 162, 240),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16.0),
@@ -219,26 +220,35 @@ class _UploadVideoPageState extends State<UploadVideoPage> {
           const SizedBox(height: 16.0),
           TextField(
             controller: _titleController,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: 'Title',
-              border: OutlineInputBorder(),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              filled: true,
+              fillColor: Colors.white,
             ),
           ),
           const SizedBox(height: 16.0),
           TextField(
             controller: _descriptionController,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: 'Description',
-              border: OutlineInputBorder(),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
               alignLabelWithHint: true,
+              filled: true,
+              fillColor: Colors
+                  .white, // Example color, you can choose your desired color
             ),
             maxLines: 3,
           ),
-          const SizedBox(height: 16.0),
+          const SizedBox(height: 30.0),
           SelectVideo(
             onVideoSelected: _handleVideoUpload,
           ),
-          const SizedBox(height: 16.0),
+          const SizedBox(height: 10.0),
           Stack(
             children: [
               Visibility(
@@ -246,24 +256,27 @@ class _UploadVideoPageState extends State<UploadVideoPage> {
                 child: Center(
                   child: Column(
                     children: [
-                      TextButton(
-                        onPressed: () {
-                          _UploadVideoToServer(context);
-                        },
-                        style: TextButton.styleFrom(
-                          foregroundColor: Colors.white, // Button text color
-                          backgroundColor:
-                              Colors.blue, // Button background color
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 10,
-                          ), // Button padding
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                8), // Button border radius
+                      Container(
+                        width: double.infinity, //parent's width
+                        child: TextButton(
+                          onPressed: () {
+                            _UploadVideoToServer(context);
+                          },
+                          style: TextButton.styleFrom(
+                            foregroundColor: Colors.white, // Button text color
+                            backgroundColor: Color.fromARGB(
+                                255, 66, 162, 240), // Button background color
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 10,
+                            ), // Button padding
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                  8), // Button border radius
+                            ),
                           ),
+                          child: const Text('Upload Video'),
                         ),
-                        child: const Text('Upload Video'),
                       ),
                       const SizedBox(
                           height:
@@ -274,8 +287,21 @@ class _UploadVideoPageState extends State<UploadVideoPage> {
               ),
               Visibility(
                 visible: _isUploading,
-                child: const Center(
-                  child: CircularProgressIndicator(),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const CircularProgressIndicator(),
+                      const SizedBox(height: 16.0),
+                      const Text(
+                        'Sorry, it might take a while...',
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],

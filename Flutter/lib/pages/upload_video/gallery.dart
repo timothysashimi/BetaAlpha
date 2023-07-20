@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:orbital_app/components/video_object.dart';
 import 'package:orbital_app/components/gallery_video_player.dart';
+import 'package:orbital_app/pages/auth_page.dart';
 import 'upload_video_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -88,92 +89,124 @@ class _GalleryPageState extends State<GalleryPage> {
                       .collection('videos')
                       .snapshots(),
                   builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                    if (snapshot.hasError) {
-                      return Center(
-                        child: Text('Error: ${snapshot.error}'),
-                      );
-                    }
-                    // Filter videos based on search query
-                    videos = snapshot.data!.docs
-                        .map<VideoObject>(
-                            (doc) => VideoObject.fromSnapshot(doc))
-                        .where((video) => video.title
-                            .toLowerCase()
-                            .contains(filter.toLowerCase()))
-                        .toList();
-
-                    return GridView.builder(
-                      padding: const EdgeInsets.all(16.0),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 16.0,
-                        mainAxisSpacing: 16.0,
-                      ),
-                      itemCount: videos.length,
-                      itemBuilder: (context, index) {
-                        VideoObject video = videos[index];
-                        return Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8.0),
-                            border: Border.all(
-                              color: Colors.black,
-                              width: 2.0,
-                            ),
-                          ),
-                          child: GridTile(
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        GalleryVideoPlayerPage(video: video),
-                                  ),
-                                );
-                              },
-                              child: Stack(
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8.0),
-                                      image: DecorationImage(
-                                        image: NetworkImage(video.url
-                                            .replaceAll('.mp4', '.jpg')),
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
-                                  Positioned(
-                                    bottom: 0,
-                                    left: 0,
-                                    right: 0,
-                                    child: Container(
-                                      padding: const EdgeInsets.all(8.0),
-                                      color: Colors.black54,
-                                      child: Text(
-                                        video.title,
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 14.0,
-                                          letterSpacing: 1.2,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
+                    try {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(
+                          child: CircularProgressIndicator(),
                         );
-                      },
-                    );
+                      } else if (snapshot.connectionState ==
+                          ConnectionState.none) {
+                        return Center(
+                          child: Text('No internet connection.'),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Center(
+                          child: Text('Error: ${snapshot.error}'),
+                        );
+                      } else {
+                        // Filter videos based on search query
+                        videos = snapshot.data!.docs
+                            .map<VideoObject>(
+                                (doc) => VideoObject.fromSnapshot(doc))
+                            .where((video) => video.title
+                                .toLowerCase()
+                                .contains(filter.toLowerCase()))
+                            .toList();
+                        if (videos.isEmpty) {
+                          return Center(
+                            child: Text(
+                                'No videos available. Start uploading them!'),
+                          );
+                        }
+
+                        return GridView.builder(
+                          padding: const EdgeInsets.all(16.0),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 16.0,
+                            mainAxisSpacing: 16.0,
+                          ),
+                          itemCount: videos.length,
+                          itemBuilder: (context, index) {
+                            VideoObject video = videos[index];
+                            return Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.0),
+                                border: Border.all(
+                                  color: Colors.black,
+                                  width: 2.0,
+                                ),
+                              ),
+                              child: GridTile(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            GalleryVideoPlayerPage(
+                                                video: video),
+                                      ),
+                                    );
+                                  },
+                                  child: Stack(
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(8.0),
+                                          image: DecorationImage(
+                                            image: NetworkImage(video.url
+                                                .replaceAll('.mp4', '.jpg')),
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        bottom: 0,
+                                        left: 0,
+                                        right: 0,
+                                        child: Container(
+                                          padding: const EdgeInsets.all(8.0),
+                                          color: Colors.black54,
+                                          child: Text(
+                                            video.title,
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14.0,
+                                              letterSpacing: 1.2,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      }
+                    } catch (e) {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('Error: $e'),
+                            ElevatedButton(
+                              onPressed: () {
+                                // Restart the app
+                                runApp(AuthPage());
+                              },
+                              child: Text('Restart App'),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
                   },
                 ),
               ),

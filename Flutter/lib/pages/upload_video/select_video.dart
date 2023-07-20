@@ -45,24 +45,28 @@ class _SelectVideoState extends State<SelectVideo> {
             },
           ),
         if (_file == null || !_isVideoPlaying)
-          TextButton(
-            onPressed: () async {
-              final file =
-                  await ImagePicker().pickVideo(source: ImageSource.gallery);
-              if (file != null) {
-                _handleVideoSelected(File(file.path));
-              }
-            },
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.white, // Button text color
-              backgroundColor: Colors.blue, // Button background color
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 16, vertical: 10), // Button padding
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8)), // Button shape
-            ),
-            child: const Text(
-              'Select Video',
+          Container(
+            width: double.infinity,
+            child: TextButton(
+              onPressed: () async {
+                final file =
+                    await ImagePicker().pickVideo(source: ImageSource.gallery);
+                if (file != null) {
+                  _handleVideoSelected(File(file.path));
+                }
+              },
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.white, // Button text color
+                backgroundColor: Color.fromARGB(
+                    255, 66, 162, 240), // Button background color
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16, vertical: 10), // Button padding
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8)), // Button shape
+              ),
+              child: const Text(
+                'Select Video',
+              ),
             ),
           ),
       ],

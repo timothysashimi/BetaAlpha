@@ -49,113 +49,163 @@ class HomePage extends StatelessWidget {
                     onPressed: signUserOut, icon: const Icon(Icons.logout))
               ])),
       body: SingleChildScrollView(
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          //LineChartWidget(),
-          const SizedBox(height: 20),
-
-          Row(
+        child: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox(width: 70),
-              SizedBox(
-                height: 30,
-                child: Text("What's your goal today?",
-                    style: (TextStyle(
+              const SizedBox(height: 40),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: 40,
+                    child: Text(
+                      "What's your goal for today?",
+                      style: TextStyle(
                         color: Color.fromARGB(255, 81, 144, 196),
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold))),
-              ),
-            ],
-          ),
-          const SizedBox(height: 30),
-          Row(
-            children: [
-              const SizedBox(width: 20),
-              SizedBox(
-                height: 50,
-                width: 210,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
                       ),
-                      backgroundColor: Colors.deepOrangeAccent),
-                  child: Row(
-                    children: [
-                      const Text("Schedule your training!"),
-                      SizedBox(width: 10),
-                      Icon(Icons.calendar_month_outlined)
-                    ],
+                    ),
                   ),
-                  onPressed: () {
-                    // Navigate to home page
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (_) => CalendarScreen()));
-                  },
-                ),
+                ],
               ),
-            ],
-          ),
-          const SizedBox(height: 40),
-          Row(
-            children: [
-              const SizedBox(width: 20),
-              SizedBox(
-                height: 50,
-                width: 210,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
+              const SizedBox(height: 40),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: 60,
+                    width: 260,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(40.0),
+                        ),
+                        backgroundColor: Colors.deepOrangeAccent,
                       ),
-                      backgroundColor: Colors.deepOrangeAccent),
-                  child: Row(
-                    children: [
-                      const Text("Need a training idea?"),
-                      SizedBox(width: 10),
-                      Icon(Icons.lightbulb)
-                    ],
-                  ),
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (_) => TrainingScreen()));
-                  },
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 40),
-          Row(
-            children: [
-              const SizedBox(width: 20),
-              SizedBox(
-                height: 50,
-                width: 210,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            "Schedule your training!",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          SizedBox(width: 10),
+                          Icon(Icons.calendar_month_outlined),
+                        ],
                       ),
-                      backgroundColor: Colors.deepOrangeAccent),
-                  child: Row(
-                    children: [
-                      const Text("Do a live recording!"),
-                      SizedBox(width: 10),
-                      Icon(Icons.camera)
-                    ],
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => CalendarScreen()),
+                        );
+                      },
+                    ),
                   ),
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (_) => PoseDetectorView()));
-                  },
-                ),
+                ],
               ),
+              const SizedBox(height: 25),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: 60,
+                    width: 260,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(40.0),
+                        ),
+                        backgroundColor: Colors.deepOrangeAccent,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            "Need a training idea?",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          SizedBox(width: 10),
+                          Icon(Icons.lightbulb),
+                        ],
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => TrainingScreen()),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 25),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: 60,
+                    width: 260,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(40.0),
+                        ),
+                        backgroundColor: Colors.deepOrangeAccent,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            "Do a live recording!",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          SizedBox(width: 10),
+                          Icon(Icons.camera),
+                        ],
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => PoseDetectorView()),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 30),
+              Column(
+                children: [
+                  const SizedBox(height: 20),
+                  const Text(
+                    "Quote of the day:",
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                      fontStyle: FontStyle.italic,
+                      color: Color.fromARGB(255, 100, 98, 98),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  const Text(
+                    "Winners train, losers complain",
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                      fontStyle: FontStyle.italic,
+                      color: Color.fromARGB(255, 100, 98, 98),
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 40),
             ],
           ),
-          const SizedBox(height: 30),
-          const Text(
-            "Quote of the day: Winners train, losers complain",
-          )
-        ]),
+        ),
       ),
       bottomNavigationBar: BottomAppBar(
         child: Container(

@@ -11,7 +11,7 @@ cloudinary.config(cloud_name = os.getenv("CLOUD_NAME"), api_key=os.getenv("API_K
     api_secret=os.getenv("API_SECRET"))
 
 
-net = cv.dnn.readNetFromTensorflow("Flask_orbital\graph_opt.pb") #weights
+net = cv.dnn.readNetFromTensorflow("graph_opt.pb") #weights
 
 inWidth = 368
 inHeight = 368

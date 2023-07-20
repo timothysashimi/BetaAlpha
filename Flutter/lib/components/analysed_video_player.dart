@@ -13,6 +13,7 @@ class AnalysedVideoPlayerPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Pose Estimation Video Player'),
+        backgroundColor: Color.fromARGB(255, 66, 162, 240),
       ),
       body: Center(
         child: ChewiePlayer(videoUrl: videoUrl),

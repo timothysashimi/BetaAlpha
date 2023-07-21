@@ -65,6 +65,8 @@ dependencies:
   flutter_native_timezone_updated_gradle: ^2.0.3
   fl_chart: ^0.62.0
   flutter_profile_picture: ^2.0.0
+  shared_preferences: ^2.2.0
+  workmanager: ^0.5.1
   
 
 

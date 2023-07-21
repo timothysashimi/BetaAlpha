@@ -173,8 +173,8 @@ class _CameraViewState extends State<CameraView> {
           _detectionViewModeToggle(),
           _zoomControl(),
           _exposureControl(),
-          _startRecording(),
-          _stopRecording(),
+          //_startRecording(),
+          //_stopRecording(),
           instructions(),
         ],
       ),
@@ -182,7 +182,7 @@ class _CameraViewState extends State<CameraView> {
   }
 
   Widget instructions() => const Positioned(
-    top: 40,
+    top: 80,
     left: 60,
     child: SizedBox(
       child: Text('Record your screen for review!',

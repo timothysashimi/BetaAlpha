@@ -124,7 +124,7 @@ class _UploadVideoPageState extends State<UploadVideoPage> {
     var length = await _selectedVideo?.length();
 
     //need to change during deployment, ngrok link
-    var uri = Uri.parse('https://1576-220-255-61-133.ngrok.io/upload');
+    var uri = Uri.parse('https://betaalpha.azurewebsites.net/upload');
     var request = http.MultipartRequest("POST", uri);
     final headers = {"Content-type": "multipart/form-data"};
     var multipartFile = http.MultipartFile(

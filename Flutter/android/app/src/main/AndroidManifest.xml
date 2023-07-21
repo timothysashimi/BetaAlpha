@@ -8,7 +8,7 @@
 <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
    <application
-        android:label="orbital_app"
+        android:label="BetaAlpha"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

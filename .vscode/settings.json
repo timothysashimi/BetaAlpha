@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "undefined/subscriptions/ddf52ca2-de19-4784-88f4-c42fb29bf476/resourceGroups/appsvc_linux_centralus_basic/providers/Microsoft.Web/sites/BetaAlpha",
+    "appService.deploySubpath": "."
+}

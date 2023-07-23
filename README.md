@@ -33,3 +33,17 @@ Milestone 2:
 🔗Project Poster: https://drive.google.com/file/d/1fI08jpFNCuAfNu8xq8VITL9mpuMvQUEY/view?usp=drive_link
 <br></br>
 🔗Project Log: https://docs.google.com/spreadsheets/d/1dVTUcnEKcQeP58B_Htrl_aLortmmDMkusnmeMcwlLwo/edit?usp=drive_link
+
+Milestone 3:
+<br></br>
+🔗Demo Video 1 Link: https://drive.google.com/file/d/1OhOEJEA6jpfJoYKnOCP8f1oSUBx-d_t7/view?usp=share_link
+<br></br>
+🔗Demo Video 2 Link: https://drive.google.com/file/d/1ytzuMorztlGPfQTivE9shnfspq2zQ-Ci/view?usp=drive_link
+<br></br>
+🔗Demo Video 3 Link: https://drive.google.com/file/d/1-35RytL7UyMdtFKnDX3lTkabQ4CF5Qa5/view?usp=drive_link
+<br></br>
+🔗Project Overview: https://docs.google.com/document/d/1kST8sJzWZEAtB-M3h3VoUIB3hOcqo23MnfLTeh--Iuc/edit?usp=drive_link
+<br></br>
+🔗Project Poster: https://drive.google.com/file/d/1JCRlncDzG5LRLihS-gGH_QXsFv2Qea8d/view?usp=drive_link
+<br></br>
+🔗Project Log: https://docs.google.com/spreadsheets/d/1dVTUcnEKcQeP58B_Htrl_aLortmmDMkusnmeMcwlLwo/edit?usp=drive_link

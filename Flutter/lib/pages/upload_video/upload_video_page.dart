@@ -123,8 +123,8 @@ class _UploadVideoPageState extends State<UploadVideoPage> {
     var stream = _selectedVideo!.readAsBytes().asStream();
     var length = await _selectedVideo?.length();
 
-    //need to change during deployment, ngrok link
-    var uri = Uri.parse('https://betaalpha.azurewebsites.net/upload');
+    //need to change during deployment, ngrok link refreshes every 2 hours
+    var uri = Uri.parse('https://9fb7-220-255-61-133.ngrok.io/upload');
     var request = http.MultipartRequest("POST", uri);
     final headers = {"Content-type": "multipart/form-data"};
     var multipartFile = http.MultipartFile(
@@ -141,7 +141,9 @@ class _UploadVideoPageState extends State<UploadVideoPage> {
     final response = await request.send();
     http.Response res = await http.Response.fromStream(response);
     final resJson = json.decode(res.body);
-    message = resJson['message'];
+    setState(() {
+      message = resJson['message'];
+    });
 
     VideoObject video = VideoObject(
       title: title,

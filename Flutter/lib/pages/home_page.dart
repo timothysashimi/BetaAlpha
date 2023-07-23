@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    fetchAndStoreQuote(); // Fetch quote initially
+    fetchQuoteIfNeeded(); // Fetch quote initially
     // Schedule daily updates
     Workmanager().initialize(callbackDispatcher);
     Workmanager().registerPeriodicTask(
@@ -55,8 +55,25 @@ class _HomePageState extends State<HomePage> {
     if (lastQuoteDate == null ||
         currentDate.difference(DateTime.parse(lastQuoteDate)).inHours >= 24) {
       setState(() {
-        fetchAndStoreQuote();
+        fetchRandomQuote().then((fetchedQuote) {
+          prefs.setString('lastQuoteDate', DateTime.now().toIso8601String());
+          prefs.setString('quoteText', fetchedQuote.text);
+          prefs.setString('quoteAuthor', fetchedQuote.author);
+          _quote = fetchedQuote;
+        }).catchError((error) {
+          // Handle error if fetching quote fails
+          print('Error fetching quote: $error');
+        });
       });
+    } else {
+      // If a new quote is not needed, get the stored quote from SharedPreferences
+      final storedQuoteText = prefs.getString('quoteText');
+      final storedQuoteAuthor = prefs.getString('quoteAuthor');
+      if (storedQuoteText != null && storedQuoteAuthor != null) {
+        setState(() {
+          _quote = Quote(text: storedQuoteText, author: storedQuoteAuthor);
+        });
+      }
     }
   }
 
@@ -275,7 +292,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   FutureBuilder<Quote>(
-                    future: fetchRandomQuote(),
+                    future: Future.delayed(Duration(seconds: 3), () => _quote),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return CircularProgressIndicator(); // Display a loading indicator while fetching the quote.
